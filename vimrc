@@ -6,8 +6,8 @@ set nocompatible              " be iMproved, required
 filetype plugin indent on " required
 syntax on
 
-"
-" "
+nnoremap <silent> <C-y> :YRShow<CR>
+
 " " Settings
 " "
  set noerrorbells                " No beeps
@@ -520,6 +520,43 @@ let g:multi_cursor_prev_key='<C-y>'
 let g:multi_cursor_skip_key='<C-b>'
 let g:multi_cursor_quit_key='<Esc>'
 
+" pinched from https://github.com/AndrewRayCode/configs/blob/3a22afc584f520fdd89d4689ff662c5440c54f3d/.vimrc#L207-L241
+function! FindAllMultipleCursors( type )
+
+    " Yank the (w)ord under the cursor into reg z. If we (were) in visual mode,
+    " use gv to re-select the last visual selection first
+    if a:type == "v"
+        norm! gv"zy
+    else
+        norm! "zyiw
+    endif
+
+    " Find how many occurrences of this word are in the current document, see
+    " :h count-items. Redirect the output to register x silently otherwise it
+    " spits out the search output
+    redir @x | silent execute "%s/\\v" . @z . "/&/gn" | redir END
+
+    " Get the first word in output ("n of n matches") which is count. Split
+    " on non-word chars because output has linebreaks
+    let s:count = split( @x, '\W' )[ 0 ]
+
+    if s:count > 15
+        call inputsave()
+        let s:yn = input('There are ' . s:count . ' matches, and MultipleCurors is slow. Are you sure? (y/n) ')
+        call inputrestore()
+        redraw
+        if s:yn != "y"
+            echo "Aborted FindAllMultipleCursors."
+            return
+        endif
+    endif
+
+    execute "MultipleCursorsFind " . @z
+endfunction
+
+nnoremap <leader>fa :call FindAllMultipleCursors("")<cr>
+vnoremap <leader>fa :call FindAllMultipleCursors("v")<cr>
+
 " Called once right before you start selecting multiple cursors
 function! Multiple_cursors_before()
   if exists(':NeoCompleteLock')==2
@@ -557,3 +594,5 @@ if !g:remoteSession
 endif
 
 " vim:ts=2:sw=2:et
+
+
