@@ -1,4 +1,6 @@
-Vim dotfiels, just a fork from Jess Frazzelle's excellent preconfigured
+# Dotfiles
+
+Vim and other dotfiles, mostly just a fork from Jess Frazelle's excellent preconfigured
 collection: https://github.com/jessfraz/.vim/blob/master/vimrc
 
 .vim
