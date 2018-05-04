@@ -1,3 +1,6 @@
+Vim dotfiels, just a fork from Jess Frazzelle's excellent preconfigured
+collection: https://github.com/jessfraz/.vim/blob/master/vimrc
+
 .vim
 ====
 
